@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotify OAuth Callback</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="callback.js"></script>
+</head>
+<body>
+  <header class="hero">
+    <h1>Spotify Authorization Response</h1>
+    <p class="tagline">Here are the query parameters Spotify sent back to this redirect URI.</p>
+  </header>
+
+  <main class="content">
+    <section class="card" id="code-card">
+      <h2>Authorization Code</h2>
+      <p id="code-value" class="value" role="status" aria-live="polite">Loading code…</p>
+      <button class="button" id="copy-button" type="button">Copy code to clipboard</button>
+      <p class="hint">You&apos;ll paste this code into your token exchange script.</p>
+    </section>
+
+    <section class="card">
+      <h2>State Parameter</h2>
+      <p id="state-value" class="value">Loading state…</p>
+      <p class="hint">If you provided a state value when starting the OAuth flow, verify it matches here.</p>
+    </section>
+
+    <section class="card">
+      <h2>Next steps</h2>
+      <ol class="steps">
+        <li>Copy the authorization code above.</li>
+        <li>Use it in your script to request access and refresh tokens from Spotify.</li>
+        <li>The authorization code expires quickly, so exchange it right away.</li>
+      </ol>
+      <a class="button" href="index.html">Back to landing page</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Having trouble? Double-check that this exact URL is registered as a redirect URI in your Spotify app settings.</p>
+  </footer>
+</body>
+</html>
