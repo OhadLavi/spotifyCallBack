@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotify OAuth Code Catcher</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <h1>Spotify OAuth Code Catcher</h1>
+    <p class="tagline">A lightweight GitHub Pages site that helps you capture the authorization code during Spotify&apos;s OAuth flow.</p>
+  </header>
+
+  <main class="content">
+    <section class="card">
+      <h2>How it works</h2>
+      <p>
+        This site is designed to act as a static redirect URI. Once your Spotify app redirects here, the callback page reads the
+        <code>code</code> and <code>state</code> values from the query string and displays them so you can paste the code into your scripts.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Use the callback page</h2>
+      <p>
+        After configuring your Spotify app with this redirect URI, run through the OAuth flow. When you land on the callback page, it will show the
+        authorization code and provide a one-click copy button.
+      </p>
+      <a class="button" href="callback.html">Go to callback page</a>
+    </section>
+
+    <section class="card">
+      <h2>Need a refresher on OAuth?</h2>
+      <p>
+        The Spotify Authorization Code flow is a two-step process: first you obtain a temporary code via the callback, then you exchange it for
+        access and refresh tokens with your server-side script.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>
+      Built for developers who need a quick way to grab the Spotify OAuth authorization code. See the repository README for more setup guidance.
+    </p>
+  </footer>
+</body>
+</html>
