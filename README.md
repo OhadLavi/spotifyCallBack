@@ -1,39 +1,75 @@
-# Spotify OAuth Code Catcher
+# spotifyCallBack
+# Spotify OAuth Callback Toolkit
 
-This repository hosts a static GitHub Pages site that you can use as the redirect URI for Spotify&apos;s Authorization Code flow. The callback page displays the `code` and `state` query parameters so you can copy the authorization code into your script and exchange it for tokens.
+This project hosts a static site purpose-built for Spotify&apos;s Authorization Code flow. It can live on GitHub Pages (or any static
+host) and provides:
 
-## 1. Publish with GitHub Pages
+- A landing page with a guided Authorization Code with PKCE launcher so you can authenticate against your Spotify account from the
+  browser.
+- A callback page that surfaces the raw `code`/`state` values, automatically exchanges the authorization code for tokens when
+  possible, and lists your playlists so you can extract their tracks.
+- Simple copy/download helpers for playlist tracks, ideal when you need to seed scripts or inspect playlist contents quickly.
+
+Everything is implemented with plain HTML, CSS, and vanilla JavaScript—no build step required.
+
+## 1. Publish with GitHub Pages (or any static host)
 
 1. Push this repository to GitHub.
-2. Open **Settings → Pages** in your GitHub repository.
+2. Open **Settings → Pages** in your repository.
 3. Under **Build and deployment**, choose **Deploy from a branch**.
-4. Select the branch you pushed (for example `main` or `master`) and the `/ (root)` folder, then click **Save**.
-5. Wait for the green success badge, then note the published URL. It will be `https://<your-user>.github.io/<repository-name>/`.
+4. Select the branch you pushed (for example `main`) and the `/ (root)` folder, then click **Save**.
+5. Wait for the deployment to finish. Your site will be available at `https://<your-user>.github.io/<repository-name>/`.
 
-The callback page will live at:
+The callback page must be reachable at:
 
 ```
 https://<your-user>.github.io/<repository-name>/callback.html
 ```
 
-## 2. Register the redirect URI with Spotify
+Register that exact URL (character-for-character) in the Spotify Developer Dashboard.
 
-1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/) and open your app.
-2. Click **Edit Settings** and scroll to **Redirect URIs**.
-3. Add your GitHub Pages callback URL exactly (for example `https://octocat.github.io/spotify-code-catcher/callback.html`).
-4. Save the settings. Spotify will only redirect to URLs that match character-for-character.
+## 2. Configure your Spotify client ID
 
-## 3. Use the callback page
+The Authorization Code with PKCE flow only needs your **client ID**—never put your client secret into this repository.
 
-1. Start the Authorization Code flow from your application or a script, using the GitHub Pages callback URL above.
-2. After logging into Spotify and granting access, Spotify will redirect back to `callback.html` with `code` and `state` parameters.
-3. The page displays these values and includes a **Copy code to clipboard** button.
+1. Duplicate `config.js` locally and set `window.SPOTIFY_CLIENT_ID` to your app&apos;s client ID from the Spotify Developer Dashboard.
+   - Alternatively, inject the value at runtime by defining `window.SPOTIFY_CLIENT_ID` before `config.js` loads (for example with a
+     small inline script or through your hosting provider&apos;s environment injection feature).
+2. Adjust `window.SPOTIFY_SCOPES` if you need permissions beyond the defaults (`playlist-read-private playlist-read-collaborative
+   user-read-email`).
+3. Commit the safe placeholder (never secrets) and deploy the updated site.
 
-> **Tip:** The authorization code expires within minutes. Exchange it for tokens as soon as you copy it.
+When the landing page loads it reads `window.SPOTIFY_CLIENT_ID`; if it&apos;s empty the one-click login button is disabled and you can
+still run the flow manually and copy the code.
 
-## 4. Exchange the code for tokens with Spotipy
+## 3. Use the hosted site
 
-Here&apos;s an example of exchanging the authorization code using [Spotipy](https://spotipy.readthedocs.io/):
+### Guided Authorization Code with PKCE flow
+
+1. Visit your deployed landing page and click **Log in with Spotify**.
+2. The page generates a code verifier/challenge pair, stores it in `sessionStorage`, and sends you to Spotify&apos;s consent screen.
+3. After approving the request you&apos;ll land on `callback.html`. The page verifies the state value, exchanges the authorization code
+   for tokens, fetches your profile, and loads all playlists reachable with the granted scopes.
+4. Pick a playlist to fetch its tracks. You can copy the formatted list to the clipboard or download the structured JSON payload for
+   scripting.
+
+### Manual workflow (fallback)
+
+You can always copy the raw authorization code shown at the top of `callback.html`. This is useful if you want to exchange the code
+from a separate script or if you skipped configuring the client ID.
+
+## 4. Working with the extracted playlist data
+
+- **Copy list** – produces a numbered list in the format `1. Track — Artist` for quick sharing or pasting into docs.
+- **Download JSON** – generates a JSON file containing the playlist name, timestamp, and an array with track metadata (name,
+  artists, album, added timestamp, and Spotify URI).
+- The data is kept in-memory only. Reloading the page clears it, and the access token is stored in `sessionStorage` for the browser
+  session.
+
+## 5. Exchange the authorization code in Python (optional)
+
+If you prefer running the token exchange yourself, the raw code from `callback.html` can still be used with
+[Spotipy](https://spotipy.readthedocs.io/) or any HTTP client. Example with Spotipy:
 
 ```python
 import spotipy
@@ -43,7 +79,7 @@ sp_oauth = SpotifyOAuth(
     client_id="YOUR_CLIENT_ID",
     client_secret="YOUR_CLIENT_SECRET",
     redirect_uri="https://<your-user>.github.io/<repository-name>/callback.html",
-    scope="user-read-private user-read-email",
+    scope="user-read-private user-read-email playlist-read-private playlist-read-collaborative",
 )
 
 authorization_code = input("Paste the authorization code: ")
@@ -55,14 +91,16 @@ print("Access token:", access_token_info["access_token"])
 print("Refresh token:", access_token_info.get("refresh_token"))
 ```
 
-Replace the placeholders with your app&apos;s credentials, scopes, and GitHub Pages URL. You can then use the returned tokens to authenticate subsequent Spotify Web API requests.
+Replace the placeholders with your credentials and the GitHub Pages URL you deployed. The scopes should match the permissions you
+request on the landing page.
 
-## 5. Local testing
+## 6. Local testing
 
-If you want to test the callback page locally before publishing:
+Serve the directory with any static server:
 
 ```bash
 python -m http.server 8000
 ```
 
-Then visit `http://localhost:8000/callback.html?code=test-code&state=test-state` to see the page in action.
+Then visit `http://localhost:8000/index.html` (landing page) or `http://localhost:8000/callback.html?code=test&state=abc` to verify
+the UI without touching the Spotify API.

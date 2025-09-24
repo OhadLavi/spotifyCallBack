@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spotify OAuth Callback</title>
   <link rel="stylesheet" href="styles.css" />
+  <script defer src="config.js"></script>
   <script defer src="callback.js"></script>
 </head>
 <body>
@@ -15,26 +16,48 @@
 
   <main class="content">
     <section class="card" id="code-card">
-      <h2>Authorization Code</h2>
+      <h2>Authorization response</h2>
       <p id="code-value" class="value" role="status" aria-live="polite">Loading code…</p>
-      <button class="button" id="copy-button" type="button">Copy code to clipboard</button>
-      <p class="hint">You&apos;ll paste this code into your token exchange script.</p>
+      <div class="action-row">
+        <button class="button" id="copy-button" type="button">Copy code to clipboard</button>
+        <a class="button link-button" href="index.html">Back to landing page</a>
+      </div>
+      <p id="token-status" class="status-message">Waiting for authorization details…</p>
     </section>
 
     <section class="card">
-      <h2>State Parameter</h2>
+      <h2>State parameter</h2>
       <p id="state-value" class="value">Loading state…</p>
       <p class="hint">If you provided a state value when starting the OAuth flow, verify it matches here.</p>
     </section>
 
-    <section class="card">
-      <h2>Next steps</h2>
-      <ol class="steps">
-        <li>Copy the authorization code above.</li>
-        <li>Use it in your script to request access and refresh tokens from Spotify.</li>
-        <li>The authorization code expires quickly, so exchange it right away.</li>
-      </ol>
-      <a class="button" href="index.html">Back to landing page</a>
+    <section class="card" id="account-card" hidden>
+      <h2>Connected Spotify account</h2>
+      <p class="value" id="account-name">Loading profile…</p>
+      <p id="account-email" class="hint"></p>
+    </section>
+
+    <section class="card" id="playlist-card" hidden>
+      <h2>Playlist explorer</h2>
+      <p class="hint">
+        Choose one of your playlists and we&apos;ll fetch the tracks. You can copy the entries or download them as a JSON file for further processing.
+      </p>
+      <label class="sr-only" for="playlist-select">Available playlists</label>
+      <select id="playlist-select" aria-label="Available playlists"></select>
+      <div class="action-row">
+        <button class="button" id="load-tracks" type="button">Load tracks</button>
+        <button class="button secondary" id="copy-tracks" type="button" disabled>Copy track list</button>
+        <button class="button secondary" id="download-tracks" type="button" disabled>Download JSON</button>
+      </div>
+      <div id="tracks-container" class="tracks" aria-live="polite"></div>
+    </section>
+
+    <section class="card" id="error-card" hidden>
+      <h2>Connection issues</h2>
+      <p id="error-message" class="value"></p>
+      <p class="hint">
+        If this keeps happening you can still copy the authorization code above and exchange it manually with your own tooling.
+      </p>
     </section>
   </main>
 
