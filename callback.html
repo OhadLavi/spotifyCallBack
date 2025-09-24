@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotify OAuth Callback</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="config.js"></script>
+  <script defer src="callback.js"></script>
+</head>
+<body>
+  <header class="hero">
+    <h1>Spotify Authorization Response</h1>
+    <p class="tagline">Here are the query parameters Spotify sent back to this redirect URI.</p>
+  </header>
+
+  <main class="content">
+    <section class="card" id="code-card">
+      <h2>Authorization response</h2>
+      <p id="code-value" class="value" role="status" aria-live="polite">Loading code…</p>
+      <div class="action-row">
+        <button class="button" id="copy-button" type="button">Copy code to clipboard</button>
+        <a class="button link-button" href="index.html">Back to landing page</a>
+      </div>
+      <p id="token-status" class="status-message">Waiting for authorization details…</p>
+    </section>
+
+    <section class="card">
+      <h2>State parameter</h2>
+      <p id="state-value" class="value">Loading state…</p>
+      <p class="hint">If you provided a state value when starting the OAuth flow, verify it matches here.</p>
+    </section>
+
+    <section class="card" id="account-card" hidden>
+      <h2>Connected Spotify account</h2>
+      <p class="value" id="account-name">Loading profile…</p>
+      <p id="account-email" class="hint"></p>
+    </section>
+
+    <section class="card" id="playlist-card" hidden>
+      <h2>Playlist explorer</h2>
+      <p class="hint">
+        Choose one of your playlists and we&apos;ll fetch the tracks. You can copy the entries or download them as a JSON file for further processing.
+      </p>
+      <label class="sr-only" for="playlist-select">Available playlists</label>
+      <select id="playlist-select" aria-label="Available playlists"></select>
+      <div class="action-row">
+        <button class="button" id="load-tracks" type="button">Load tracks</button>
+        <button class="button secondary" id="copy-tracks" type="button" disabled>Copy track list</button>
+        <button class="button secondary" id="download-tracks" type="button" disabled>Download JSON</button>
+      </div>
+      <div id="tracks-container" class="tracks" aria-live="polite"></div>
+    </section>
+
+    <section class="card" id="error-card" hidden>
+      <h2>Connection issues</h2>
+      <p id="error-message" class="value"></p>
+      <p class="hint">
+        If this keeps happening you can still copy the authorization code above and exchange it manually with your own tooling.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Having trouble? Double-check that this exact URL is registered as a redirect URI in your Spotify app settings.</p>
+  </footer>
+</body>
+</html>

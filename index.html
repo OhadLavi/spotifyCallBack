@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotify OAuth Toolkit</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="config.js"></script>
+  <script defer src="landing.js"></script>
+</head>
+<body>
+  <header class="hero">
+    <h1>Spotify OAuth Code Catcher</h1>
+    <p class="tagline">A lightweight GitHub Pages site that helps you capture the authorization code during Spotify&apos;s OAuth flow.</p>
+  </header>
+
+  <main class="content">
+    <section class="card">
+      <h2>How it works</h2>
+      <p>
+        This site is designed to act as a static redirect URI. Once your Spotify app redirects here, the callback page reads the
+        <code>code</code> and <code>state</code> values from the query string and displays them so you can paste the code into your scripts.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Connect with Spotify</h2>
+      <p id="login-status" class="status-message">
+        Configure your Spotify application client ID to enable the guided Authorization Code with PKCE flow.
+      </p>
+      <div id="login-instructions" class="hint" hidden>
+        <p>
+          When you click the button below, we generate a code verifier and challenge, save them to <code>sessionStorage</code>, and redirect you to Spotify
+          to grant access. After approving, you&apos;ll come back to the callback page where tokens and playlists are loaded automatically.
+        </p>
+      </div>
+      <button id="login-button" class="button" type="button">Log in with Spotify</button>
+      <a class="button link-button" href="callback.html">Open callback page directly</a>
+    </section>
+
+    <section class="card">
+      <h2>Need a refresher on OAuth?</h2>
+      <p>
+        The Spotify Authorization Code flow is a two-step process: first you obtain a temporary code via the callback, then you exchange it for
+        access and refresh tokens with your server-side script.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Extract playlist songs</h2>
+      <p>
+        Once connected, the callback page will list your playlists so you can pick one and copy its tracks or download them as JSON. This is handy when
+        seeding scripts or curating data sets from your Spotify library.
+      </p>
+      <p class="hint">
+        Prefer manual steps? You can still copy the raw authorization code from the callback page and exchange it with your own tooling.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>
+      Built for developers who need a quick way to grab the Spotify OAuth authorization code. See the repository README for more setup guidance.
+    </p>
+  </footer>
+</body>
+</html>
